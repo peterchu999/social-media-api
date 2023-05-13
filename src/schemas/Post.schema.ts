@@ -1,27 +1,26 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
+import { User } from './User.schema';
+import { Comment } from './Comment.schema';
 
-export type UserDocument = HydratedDocument<User>;
+export type PostDocument = HydratedDocument<Post>;
 
 @Schema()
-export class User {
-  @Prop({ type: Types.ObjectId, required: true })
-  cognitoId: string;
-
+export class Post {
   @Prop({ required: true })
-  username: string;
+  imageUrl: string;
 
   @Prop({ required: false })
-  biography?: string;
+  description?: string;
 
-  @Prop({ required: false })
-  profilePictureUrl?: string;
-
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
-  followers: User[];
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  author: User;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
-  following: User[];
+  likes: User[];
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Comment' }], default: [] })
+  comments: Comment[];
 
   //   TODO: remember to check the implementation
   @Prop({ type: Date, default: Date.now() })
@@ -32,4 +31,4 @@ export class User {
   updatedAt: Date;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+export const PostSchema = SchemaFactory.createForClass(Post);

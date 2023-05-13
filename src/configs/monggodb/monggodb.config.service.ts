@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MongooseModuleOptions } from '@nestjs/mongoose';
 
-// TypeOrmModuleOptions;
 @Injectable()
 export class MonggoDBConfigService {
   protected databaseUri: string;
