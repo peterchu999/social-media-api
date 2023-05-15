@@ -7,5 +7,6 @@ import { UserRepositoryModule } from '../../repositories/user/user.repository.mo
   imports: [UserRepositoryModule],
   providers: [UserService],
   controllers: [UserController],
+  exports: [UserService],
 })
 export class UserModule {}

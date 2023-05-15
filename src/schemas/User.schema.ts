@@ -1,12 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Transform } from 'class-transformer';
 import { HydratedDocument, Types } from 'mongoose';
 
 export type UserDocument = HydratedDocument<User>;
 
-@Schema()
+@Schema({
+  timestamps: true,
+})
 export class User {
-  @Prop({ type: Types.ObjectId, required: true })
-  cognitoId: string;
+  @Transform(({ value }) => value.toString())
+  _id: Types.ObjectId;
+
+  @Prop({ required: true })
+  password: string;
 
   @Prop({ required: true })
   username: string;
@@ -22,14 +28,6 @@ export class User {
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
   following: User[];
-
-  //   TODO: remember to check the implementation
-  @Prop({ type: Date, default: Date.now() })
-  cretedAt: Date;
-
-  //   TODO: remember to check the implementation
-  @Prop({ type: Date, required: false })
-  updatedAt: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
