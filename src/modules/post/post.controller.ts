@@ -58,7 +58,6 @@ export class PostController {
     @Param('postId') postId: string,
     @Body() data: UpdatePostRequestDto,
   ) {
-    // update post data
     return this.postService.updatePost({ ...data, id: postId });
   }
 

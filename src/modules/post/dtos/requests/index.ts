@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsArray, IsOptional, IsString, IsUrl } from 'class-validator';
 
 export class CreatePostRequestDto {
   @IsUrl()
@@ -17,6 +17,10 @@ export class UpdatePostRequestDto {
   @IsString()
   @IsOptional()
   description?: string;
+
+  @IsArray()
+  @IsOptional()
+  keywords: string[];
 }
 
 export class CommentPostRequestDto {

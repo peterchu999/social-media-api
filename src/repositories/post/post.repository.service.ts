@@ -42,7 +42,9 @@ export class PostRepositoryService {
   }
 
   async getPostByKeyword(keyword: string): Promise<Post[]> {
-    return this.postModel.find({ keywords: keyword });
+    return this.postModel.find({
+      keywords: keyword,
+    });
   }
 
   async createComment(commentDto: CommentDto): Promise<Comment> {
