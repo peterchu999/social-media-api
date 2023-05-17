@@ -31,6 +31,11 @@ export class AuthService {
     password: string,
   ): Promise<Omit<User, 'password'>> {
     const user = await this.userService.findByUserName(username);
+
+    if (!user) {
+      return null;
+    }
+
     const isPassword = await new Promise<boolean>((resolve, reject) => {
       bcrypt.compare(password, user.password, function (err, result) {
         if (err) {
@@ -40,9 +45,8 @@ export class AuthService {
       });
     });
 
-    if (user && isPassword) {
-      const { password, ...result } = user;
-      return result;
+    if (isPassword) {
+      return user;
     }
 
     return null;
@@ -54,7 +58,7 @@ export class AuthService {
   }: LoginRequestDto): Promise<LoginResponseDto> {
     const user = await this.validateUser(username, password);
 
-    const payload = { username: user.username, sub: user._id };
+    const payload = { username: user.username, sub: user._id.toString() };
 
     return {
       access_token: this.jwtService.sign(payload),

@@ -1,4 +1,4 @@
-import { Expose } from 'class-transformer';
+import { Exclude, Expose, Transform } from 'class-transformer';
 import { User } from '../../../../schemas/User.schema';
 
 class CommentResponseDto {
@@ -16,16 +16,20 @@ class PostResponseDto {
   @Expose()
   description?: string;
 
+  @Transform(({ value }) => value.length)
   @Expose()
-  likes: number;
+  likes: User[];
 
   @Expose()
   comments: CommentResponseDto[];
 
   @Expose()
-  cretedAt: Date;
+  createdAt: Date;
 
+  @Exclude()
   author: User;
+
+  @Exclude()
   updatedAt: Date;
 }
 

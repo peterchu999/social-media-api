@@ -1,12 +1,15 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Serialize } from '../../filters/serializer.interceptor';
 import { AuthService } from './auth.service';
 import { LoginRequestDto, SignUpRequestDto } from './dtos/requests';
 import { LoginResponseDto, SignUpResponseDto } from './dtos/responses';
 
+// @UseInterceptors(new SerializeInterceptor())
 @ApiTags('auth')
 @ApiBearerAuth()
 @Controller('auth')
+@Serialize()
 export class AuthController {
   constructor(protected authService: AuthService) {}
 

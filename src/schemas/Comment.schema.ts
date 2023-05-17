@@ -13,7 +13,7 @@ export class Comment {
   @Prop({ required: true })
   text: string;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], required: true })
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   author: User;
 }
 

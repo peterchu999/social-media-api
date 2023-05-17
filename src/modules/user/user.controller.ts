@@ -1,4 +1,12 @@
-import { Controller, Get, Param, Patch, Query } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Query,
+  UseInterceptors,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -10,6 +18,7 @@ import { UserService } from './user.service';
 @ApiTags('users')
 @ApiBearerAuth()
 @Controller('users')
+@UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
   constructor(private userService: UserService) {}
 

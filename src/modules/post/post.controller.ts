@@ -1,10 +1,13 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
+  Param,
   Patch,
   Post,
   Query,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -14,20 +17,31 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../guards';
+import { AuthRequest } from '../../types/http';
+import { CommentPostRequestDto, CreatePostRequestDto } from './dtos/requests';
+import { PostService } from './post.service';
 
 @UseGuards(JwtAuthGuard)
 @ApiTags('posts')
 @ApiBearerAuth()
 @Controller('posts')
 export class PostController {
+  constructor(private postService: PostService) {}
+
   @Post('/')
   @ApiOperation({ summary: 'create new post' })
   @ApiResponse({
     status: 201,
     description: 'Successfully Create New Posts',
   })
-  async createPost() {
-    // insert new post data
+  async createPost(
+    @Request() { user: { userId } }: AuthRequest,
+    @Body() data: CreatePostRequestDto,
+  ) {
+    return this.postService.createNewPost({
+      ...data,
+      author: userId,
+    });
   }
 
   @Patch('/:postId')
@@ -46,8 +60,11 @@ export class PostController {
     status: 200,
     description: 'Successfully like the post',
   })
-  async likePost() {
-    // insert user to the post likes
+  async likePost(
+    @Request() { user: { userId } }: AuthRequest,
+    @Param('postId') postId: string,
+  ) {
+    return this.postService.likePost({ postId, userId });
   }
 
   @Post('/:postId/comments')
@@ -56,8 +73,15 @@ export class PostController {
     status: 200,
     description: 'Successfully comment on the post',
   })
-  async commentPost() {
-    // insert comments on the posts
+  async commentPost(
+    @Request() { user: { userId } }: AuthRequest,
+    @Param('postId') postId: string,
+    @Body() commentRequsetDto: CommentPostRequestDto,
+  ) {
+    return this.postService.addCommentToPost(postId, {
+      ...commentRequsetDto,
+      author: userId,
+    });
   }
 
   @Delete('/:postId')
@@ -66,8 +90,11 @@ export class PostController {
     status: 200,
     description: 'Post Deleted',
   })
-  async deletePost() {
-    // delete data
+  async deletePost(
+    @Request() { user: { userId } }: AuthRequest,
+    @Param('postId') postId: string,
+  ) {
+    return this.postService.deletePost({ postId, userId });
   }
 
   @Get('/')
@@ -77,6 +104,6 @@ export class PostController {
     description: 'Post Deleted',
   })
   async getPosts(@Query('keyword') keyword: string) {
-    // get post by queryParam keyword
+    return this.postService.getPostBy(keyword);
   }
 }

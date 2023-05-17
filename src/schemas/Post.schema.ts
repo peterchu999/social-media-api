@@ -17,6 +17,9 @@ export class Post {
   @Prop({ required: false })
   description?: string;
 
+  @Prop({ default: [] })
+  keywords: string[];
+
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   author: User;
 
@@ -25,6 +28,9 @@ export class Post {
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Comment' }], default: [] })
   comments: Comment[];
+
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);
