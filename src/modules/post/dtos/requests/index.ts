@@ -11,6 +11,7 @@ export class CreatePostRequestDto {
 
 export class UpdatePostRequestDto {
   @IsUrl()
+  @IsOptional()
   imageUrl?: string;
 
   @IsString()

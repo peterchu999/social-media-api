@@ -18,7 +18,11 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../guards';
 import { AuthRequest } from '../../types/http';
-import { CommentPostRequestDto, CreatePostRequestDto } from './dtos/requests';
+import {
+  CommentPostRequestDto,
+  CreatePostRequestDto,
+  UpdatePostRequestDto,
+} from './dtos/requests';
 import { PostService } from './post.service';
 
 @UseGuards(JwtAuthGuard)
@@ -50,8 +54,12 @@ export class PostController {
     status: 200,
     description: 'Successfully update post information',
   })
-  async updatePost() {
+  async updatePost(
+    @Param('postId') postId: string,
+    @Body() data: UpdatePostRequestDto,
+  ) {
     // update post data
+    return this.postService.updatePost({ ...data, id: postId });
   }
 
   @Patch('/:postId/likes')
