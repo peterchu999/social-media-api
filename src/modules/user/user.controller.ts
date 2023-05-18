@@ -2,10 +2,12 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
-  Param,
   Patch,
-  Query,
   UseInterceptors,
+  Request,
+  UseGuards,
+  Post,
+  Body,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -14,11 +16,16 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { UserService } from './user.service';
+import { AuthRequest } from '../../types/http';
+import { UserResponseDto } from './dtos/response';
+import { JwtAuthGuard } from 'src/guards';
+import { User } from 'src/schemas/User.schema';
+import { FollowUserRequestDto, UpdateUserRequestDto } from './dtos/requests';
 
 @ApiTags('users')
 @ApiBearerAuth()
 @Controller('users')
-@UseInterceptors(ClassSerializerInterceptor)
+@UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -28,8 +35,12 @@ export class UserController {
     status: 200,
     description: 'Successfully Update User Information',
   })
-  async updateProfile() {
-    // update user information on DB
+  async updateProfile(
+    @Request() { user: { userId } }: AuthRequest,
+    @Body() userUpdateDto: UpdateUserRequestDto,
+  ) {
+    console.log(userUpdateDto);
+    return this.userService.updateUser(userId, userUpdateDto);
   }
 
   @Get('/')
@@ -38,18 +49,22 @@ export class UserController {
     status: 200,
     description: 'Successfully Retrive User Information',
   })
-  async getUserInformation() {
-    // fetch users profile data from database
-    // fetch users posts information
+  async getUserInformation(
+    @Request() { user: { userId } }: AuthRequest,
+  ): Promise<UserResponseDto> {
+    return this.userService.findById(userId);
   }
 
-  @Get('/following/posts')
-  @ApiOperation({ summary: 'get current logged in user following posts' })
+  @Post('/follow')
+  @ApiOperation({ summary: 'follow another user' })
   @ApiResponse({
     status: 200,
-    description: 'Posts from following users',
+    description: "You've follow another user",
   })
-  async getFollowingPosts() {
-    // get the following post from posts services
+  async followUser(
+    @Request() { user: { userId } }: AuthRequest,
+    @Body() { userId: followingId }: FollowUserRequestDto,
+  ) {
+    return this.userService.followUser(userId, followingId);
   }
 }

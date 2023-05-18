@@ -24,7 +24,6 @@ import {
   UpdatePostRequestDto,
 } from './dtos/requests';
 import { PostService } from './post.service';
-import { UserService } from '../user/user.service';
 
 @UseGuards(JwtAuthGuard)
 @ApiTags('posts')
