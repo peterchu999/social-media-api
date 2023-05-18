@@ -1,18 +1,28 @@
-import { IsArray, IsOptional, IsString, IsUrl } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsObject,
+  IsOptional,
+  IsString,
+  IsUrl,
+} from 'class-validator';
 
 export class CreatePostRequestDto {
-  @IsUrl()
-  imageUrl: string;
+  image: Express.Multer.File;
+  author: string;
 
   @IsString()
   @IsOptional()
   description?: string;
+
+  @IsArray({ each: true })
+  @IsOptional()
+  keywords?: string[];
 }
 
 export class UpdatePostRequestDto {
-  @IsUrl()
   @IsOptional()
-  imageUrl?: string;
+  image?: Express.Multer.File;
 
   @IsString()
   @IsOptional()

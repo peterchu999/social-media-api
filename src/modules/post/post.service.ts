@@ -1,22 +1,39 @@
 import { Injectable } from '@nestjs/common';
+import { v4 as uuid } from 'uuid';
 import { PostRepositoryService } from '../../repositories/post/post.repository.service';
-import { CreatePostResponseDto, GetPostsResponseDto } from './dtos/responses';
-import { CommentDto, CreatePostDto, UpdatePostDto } from './dtos/repositories';
-import { DeletePostDto, LikesPostDto } from './dtos/requests';
-import { User } from '../../schemas/User.schema';
+import { AwsService } from '../aws/aws.service';
 import { UserService } from '../user/user.service';
+import { CommentDto, UpdatePostDto } from './dtos/repositories';
+import {
+  CreatePostRequestDto,
+  DeletePostDto,
+  LikesPostDto,
+  UpdatePostRequestDto,
+} from './dtos/requests';
+import { CreatePostResponseDto, GetPostsResponseDto } from './dtos/responses';
 
 @Injectable()
 export class PostService {
   constructor(
+    private awsService: AwsService,
     private postRepository: PostRepositoryService,
     private userService: UserService,
   ) {}
 
   async createNewPost(
-    createPostData: CreatePostDto,
+    createPostData: CreatePostRequestDto,
   ): Promise<CreatePostResponseDto> {
-    return this.postRepository.create(createPostData);
+    const { image } = createPostData;
+
+    const { Location } = await this.awsService.uploadFileToS3(
+      image.buffer,
+      `posts/${uuid()}`,
+    );
+
+    return this.postRepository.create({
+      ...createPostData,
+      imageUrl: Location,
+    });
   }
 
   async deletePost(deletePostDto: DeletePostDto): Promise<boolean> {
@@ -48,7 +65,21 @@ export class PostService {
     return { posts };
   }
 
-  async updatePost(userId: string, postDto: UpdatePostDto) {
+  async updatePost(
+    postId: string,
+    userId: string,
+    { image, ...postData }: UpdatePostRequestDto,
+  ) {
+    const postDto: UpdatePostDto = { ...postData, id: postId };
+
+    if (image) {
+      const { Location } = await this.awsService.uploadFileToS3(
+        image.buffer,
+        `posts/${uuid()}`,
+      );
+      postDto.imageUrl = Location;
+    }
+
     return this.postRepository.update(userId, postDto);
   }
 }

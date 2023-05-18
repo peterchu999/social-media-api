@@ -1,23 +1,27 @@
 import { IsOptional, IsString } from 'class-validator';
 
-export class CreateUserRequestDto {
+export class CreateUserDto {
   @IsString()
   username: string;
 
   @IsString()
   password: string;
-}
 
-export class UpdateUserRequestDto {
   @IsString()
   @IsOptional()
   biography?: string;
 
+  @IsString()
   @IsOptional()
-  profilePicture?: Express.Multer.File;
+  profilePictureUrl?: string;
 }
 
-export class FollowUserRequestDto {
+export class UpdateUserDto {
   @IsString()
-  userId: string;
+  @IsOptional()
+  biography?: string;
+
+  @IsString()
+  @IsOptional()
+  profilePictureUrl?: string;
 }

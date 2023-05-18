@@ -1,5 +1,11 @@
 import { Type } from 'class-transformer';
-import { IsArray, IsOptional, IsString, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { Comment } from '../../../../schemas/Comment.schema';
 import { User } from '../../../../schemas/User.schema';
 

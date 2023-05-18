@@ -29,7 +29,7 @@ class SerializeInterceptor implements NestInterceptor {
           });
         }
         return {
-          success: true,
+          success: false,
           payload: exposedData,
         };
       }),

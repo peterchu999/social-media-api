@@ -8,7 +8,9 @@ import {
   Post,
   Query,
   Request,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -24,6 +26,7 @@ import {
   UpdatePostRequestDto,
 } from './dtos/requests';
 import { PostService } from './post.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(JwtAuthGuard)
 @ApiTags('posts')
@@ -38,12 +41,15 @@ export class PostController {
     status: 201,
     description: 'Successfully Create New Posts',
   })
+  @UseInterceptors(FileInterceptor('image'))
   async createPost(
     @Request() { user: { userId } }: AuthRequest,
     @Body() data: CreatePostRequestDto,
+    @UploadedFile() image: Express.Multer.File,
   ) {
     return this.postService.createNewPost({
       ...data,
+      image,
       author: userId,
     });
   }
@@ -54,12 +60,17 @@ export class PostController {
     status: 200,
     description: 'Successfully update post information',
   })
+  @UseInterceptors(FileInterceptor('image'))
   async updatePost(
     @Param('postId') postId: string,
     @Request() { user: { userId } }: AuthRequest,
     @Body() data: UpdatePostRequestDto,
+    @UploadedFile() image?: Express.Multer.File | undefined,
   ) {
-    return this.postService.updatePost(userId, { ...data, id: postId });
+    return this.postService.updatePost(postId, userId, {
+      ...data,
+      image,
+    });
   }
 
   @Patch('/:postId/likes')
@@ -109,7 +120,7 @@ export class PostController {
   @ApiOperation({ summary: 'Get Current User Posts' })
   @ApiResponse({
     status: 200,
-    description: 'get the list of the current user posts',
+    description: 'Successfully retrive user post',
   })
   async getUserPosts(@Request() { user: { userId } }: AuthRequest) {
     return this.postService.getUserPost(userId);
@@ -119,7 +130,7 @@ export class PostController {
   @ApiOperation({ summary: 'Search a post' })
   @ApiResponse({
     status: 200,
-    description: 'search post by keyword',
+    description: 'Successfully retrive post by keyword',
   })
   async getPostsBy(@Query('keyword') keyword: string) {
     return this.postService.getPostBy(keyword);
@@ -129,7 +140,7 @@ export class PostController {
   @ApiOperation({ summary: 'Feeds of current user' })
   @ApiResponse({
     status: 200,
-    description: "list of posts from current user and it's following",
+    description: 'Successfully retrive feeds',
   })
   async getFeeds(@Request() { user: { userId } }: AuthRequest) {
     return this.postService.getUserFeed(userId);

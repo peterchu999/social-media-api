@@ -32,7 +32,7 @@ export class PostRepositoryService {
   }
 
   async update(userId: string, updatedPost: UpdatePostDto): Promise<Post> {
-    return this.postModel.findOne(
+    return this.postModel.findOneAndUpdate(
       { _id: updatedPost.id, author: userId },
       updatedPost,
       {

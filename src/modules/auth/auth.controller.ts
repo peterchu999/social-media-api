@@ -5,7 +5,6 @@ import { AuthService } from './auth.service';
 import { LoginRequestDto, SignUpRequestDto } from './dtos/requests';
 import { LoginResponseDto, SignUpResponseDto } from './dtos/responses';
 
-// @UseInterceptors(new SerializeInterceptor())
 @ApiTags('auth')
 @ApiBearerAuth()
 @Controller('auth')

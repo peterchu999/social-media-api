@@ -1,13 +1,13 @@
 import {
-  ClassSerializerInterceptor,
+  Body,
   Controller,
   Get,
   Patch,
-  UseInterceptors,
-  Request,
-  UseGuards,
   Post,
-  Body,
+  Request,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -15,17 +15,19 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { UserService } from './user.service';
-import { AuthRequest } from '../../types/http';
-import { UserResponseDto } from './dtos/response';
 import { JwtAuthGuard } from 'src/guards';
-import { User } from 'src/schemas/User.schema';
+import { AuthRequest } from '../../types/http';
 import { FollowUserRequestDto, UpdateUserRequestDto } from './dtos/requests';
+import { UserResponseDto } from './dtos/response';
+import { UserService } from './user.service';
+import { Serialize } from '../../filters/serializer.interceptor';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('users')
 @ApiBearerAuth()
 @Controller('users')
 @UseGuards(JwtAuthGuard)
+@Serialize()
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -35,12 +37,16 @@ export class UserController {
     status: 200,
     description: 'Successfully Update User Information',
   })
+  @UseInterceptors(FileInterceptor('profilePicture'))
   async updateProfile(
     @Request() { user: { userId } }: AuthRequest,
     @Body() userUpdateDto: UpdateUserRequestDto,
+    @UploadedFile() profilePicture: Express.Multer.File,
   ) {
-    console.log(userUpdateDto);
-    return this.userService.updateUser(userId, userUpdateDto);
+    return this.userService.updateUser(userId, {
+      ...userUpdateDto,
+      profilePicture,
+    });
   }
 
   @Get('/')
