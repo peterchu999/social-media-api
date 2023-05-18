@@ -24,6 +24,7 @@ import {
   UpdatePostRequestDto,
 } from './dtos/requests';
 import { PostService } from './post.service';
+import { UserService } from '../user/user.service';
 
 @UseGuards(JwtAuthGuard)
 @ApiTags('posts')
@@ -56,9 +57,10 @@ export class PostController {
   })
   async updatePost(
     @Param('postId') postId: string,
+    @Request() { user: { userId } }: AuthRequest,
     @Body() data: UpdatePostRequestDto,
   ) {
-    return this.postService.updatePost({ ...data, id: postId });
+    return this.postService.updatePost(userId, { ...data, id: postId });
   }
 
   @Patch('/:postId/likes')
@@ -105,12 +107,32 @@ export class PostController {
   }
 
   @Get('/')
+  @ApiOperation({ summary: 'Get Current User Posts' })
+  @ApiResponse({
+    status: 200,
+    description: 'get the list of the current user posts',
+  })
+  async getUserPosts(@Request() { user: { userId } }: AuthRequest) {
+    return this.postService.getUserPost(userId);
+  }
+
+  @Get('/search')
   @ApiOperation({ summary: 'Search a post' })
   @ApiResponse({
     status: 200,
-    description: 'Post Deleted',
+    description: 'search post by keyword',
   })
-  async getPosts(@Query('keyword') keyword: string) {
+  async getPostsBy(@Query('keyword') keyword: string) {
     return this.postService.getPostBy(keyword);
+  }
+
+  @Get('/feeds')
+  @ApiOperation({ summary: 'Feeds of current user' })
+  @ApiResponse({
+    status: 200,
+    description: "list of posts from current user and it's following",
+  })
+  async getFeeds(@Request() { user: { userId } }: AuthRequest) {
+    return this.postService.getUserFeed(userId);
   }
 }

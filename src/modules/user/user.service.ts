@@ -11,7 +11,11 @@ export class UserService {
     return this.repository.create(user);
   }
 
-  async findByUserName(username: string) {
-    return this.repository.findByUserName(username);
+  async findByUsername(username: string) {
+    return this.repository.findByUsername(username);
+  }
+
+  async findById(userId: string) {
+    return this.repository.findById(userId);
   }
 }

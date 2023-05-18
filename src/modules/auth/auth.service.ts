@@ -30,7 +30,7 @@ export class AuthService {
     username: string,
     password: string,
   ): Promise<Omit<User, 'password'>> {
-    const user = await this.userService.findByUserName(username);
+    const user = await this.userService.findByUsername(username);
 
     if (!user) {
       return null;

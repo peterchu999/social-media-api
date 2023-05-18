@@ -4,10 +4,14 @@ import { CreatePostResponseDto, GetPostsResponseDto } from './dtos/responses';
 import { CommentDto, CreatePostDto, UpdatePostDto } from './dtos/repositories';
 import { DeletePostDto, LikesPostDto } from './dtos/requests';
 import { User } from '../../schemas/User.schema';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class PostService {
-  constructor(private postRepository: PostRepositoryService) {}
+  constructor(
+    private postRepository: PostRepositoryService,
+    private userService: UserService,
+  ) {}
 
   async createNewPost(
     createPostData: CreatePostDto,
@@ -28,12 +32,23 @@ export class PostService {
     return this.postRepository.insertComment(postId, comment);
   }
 
+  async getUserPost(userId: string): Promise<GetPostsResponseDto> {
+    const posts = await this.postRepository.getPostByAuthors([userId]);
+    return { posts };
+  }
+
+  async getUserFeed(userId: string): Promise<GetPostsResponseDto> {
+    const { following } = await this.userService.findById(userId);
+    const posts = await this.postRepository.getPostByAuthors(following);
+    return { posts };
+  }
+
   async getPostBy(keyword: string): Promise<GetPostsResponseDto> {
     const posts = await this.postRepository.getPostByKeyword(keyword);
     return { posts };
   }
 
-  async updatePost(postDto: UpdatePostDto) {
-    return this.postRepository.update(postDto);
+  async updatePost(userId: string, postDto: UpdatePostDto) {
+    return this.postRepository.update(userId, postDto);
   }
 }

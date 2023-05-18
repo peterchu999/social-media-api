@@ -13,7 +13,10 @@ export class UserRepositoryService {
     return user.save();
   }
 
-  async findByUserName(username: string): Promise<User> {
+  async findByUsername(username: string): Promise<User> {
     return this.userModel.findOne({ username });
+  }
+  async findById(userId: string): Promise<User> {
+    return this.userModel.findById(userId);
   }
 }

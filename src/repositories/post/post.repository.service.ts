@@ -31,13 +31,17 @@ export class PostRepositoryService {
     return result.acknowledged;
   }
 
-  async update(updatedPost: UpdatePostDto): Promise<Post> {
-    return this.postModel.findByIdAndUpdate(updatedPost.id, updatedPost, {
-      new: true,
-    });
+  async update(userId: string, updatedPost: UpdatePostDto): Promise<Post> {
+    return this.postModel.findOne(
+      { _id: updatedPost.id, author: userId },
+      updatedPost,
+      {
+        new: true,
+      },
+    );
   }
 
-  async getPostByAuthors(authors: User[]): Promise<Post[]> {
+  async getPostByAuthors(authors: (User | string)[]): Promise<Post[]> {
     return this.postModel.find({ author: { $in: authors } });
   }
 
