@@ -13,6 +13,18 @@ provider:
   iam:
     role: arn:aws:iam::972151653072:role/lambda
 
+package:
+  individually: true
+  excludeDevDependencies: true
+  patterns:
+    - './dist/**'
+    - './node_modules'
+    - '!node_modules/**/@types/**'
+    - '!node_modules/**/*.d.ts'
+    - '!node_modules/**/.yarn-integrity'
+    - '!node_modules/**/.bin'
+    - '!node_modules/aws-sdk/**'
+
 functions:
   main:
     handler: dist/handler.handler
