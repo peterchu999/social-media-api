@@ -7,7 +7,7 @@ export class MonggoDBConfigService {
   protected databaseUri: string;
   protected dbName: string;
 
-  constructor(private configService: ConfigService) {
+  constructor(configService: ConfigService) {
     this.databaseUri = configService.get<string>('DATABASE_URL');
     this.dbName = configService.get<string>('DATABASE_NAME');
   }

@@ -1,6 +1,8 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
 
 export class SignUpResponseDto {
+  @ApiProperty()
   @Expose()
   username: string;
 
@@ -9,6 +11,7 @@ export class SignUpResponseDto {
 }
 
 export class LoginResponseDto {
+  @ApiProperty()
   @Expose()
   access_token: string;
 }
