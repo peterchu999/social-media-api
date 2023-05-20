@@ -73,7 +73,7 @@ export class PostController {
     });
   }
 
-  @Patch('/:postId/likes')
+  @Post('/:postId/likes')
   @ApiOperation({ summary: 'Like a Post' })
   @ApiResponse({
     status: 200,

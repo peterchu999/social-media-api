@@ -35,8 +35,8 @@ functions:
           cors:
             origin: '*'
       - http:
-          method: ANY
-          path: '/users/{proxy+}'
+          method: POST
+          path: '/users/follow'
           cors:
             origin: '*'
       - http:
@@ -45,17 +45,47 @@ functions:
           cors:
             origin: '*'
       - http:
-          method: ANY
-          path: '/posts/{proxy+}'
+          method: PATCH
+          path: '/posts/{id}'
           cors:
             origin: '*'
       - http:
-          method: ANY
+          method: DELETE
+          path: '/posts/{id}'
+          cors:
+            origin: '*'
+      - http:
+          method: POST
+          path: '/posts/{id}/likes'
+          cors:
+            origin: '*'
+      - http:
+          method: POST
+          path: '/posts/{id}/comment'
+          cors:
+            origin: '*'
+      - http:
+          method: GET
+          path: '/posts/search'
+          cors:
+            origin: '*'
+      - http:
+          method: GET
+          path: '/posts/feeds'
+          cors:
+            origin: '*'
+      - http:
+          method: GET
           path: /auth/
           cors:
             origin: '*'
       - http:
-          method: ANY
-          path: /auth/{proxy+}
+          method: POST
+          path: /auth/sign-up
+          cors:
+            origin: '*'
+      - http:
+          method: POST
+          path: /auth/login
           cors:
             origin: '*'

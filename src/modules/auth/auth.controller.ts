@@ -12,7 +12,7 @@ export class AuthController {
 
   @Get('/')
   async check(): Promise<any> {
-    return { success: true, fault: 'yosef' };
+    return { success: true, message: 'check called' };
   }
 
   @ApiOkResponse({
