@@ -8,8 +8,13 @@ import { Types } from 'mongoose';
 import { User } from 'src/schemas/User.schema';
 
 export class UserResponseDto implements User {
+  @Expose({ name: '_id' })
+  @Transform((data) => {
+    return data.value.toString();
+  })
+  id: string;
+
   @Expose()
-  //   @Transform((value) => value.toString())
   _id: Types.ObjectId;
 
   @Exclude()

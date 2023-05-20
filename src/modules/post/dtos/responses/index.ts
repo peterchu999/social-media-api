@@ -10,6 +10,14 @@ class CommentResponseDto {
 }
 
 class PostResponseDto {
+  @Expose({
+    name: '_id',
+  })
+  @Transform((data) => {
+    return data.value.toString();
+  })
+  id: string;
+
   @Expose()
   imageUrl: string;
 

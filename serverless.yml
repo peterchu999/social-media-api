@@ -45,12 +45,7 @@ functions:
           cors:
             origin: '*'
       - http:
-          method: PATCH
-          path: '/posts/{id}'
-          cors:
-            origin: '*'
-      - http:
-          method: DELETE
+          method: ANY
           path: '/posts/{id}'
           cors:
             origin: '*'
@@ -81,11 +76,11 @@ functions:
             origin: '*'
       - http:
           method: POST
-          path: /auth/sign-up
+          path: '/auth/sign-up'
           cors:
             origin: '*'
       - http:
           method: POST
-          path: /auth/login
+          path: '/auth/login'
           cors:
             origin: '*'

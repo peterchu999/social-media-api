@@ -15,7 +15,11 @@ export class UserService {
   ) {}
 
   async createUser(userDto: CreateUserRequestDto): Promise<UserResponseDto> {
-    return this.repository.create(userDto);
+    return plainToInstance(
+      UserResponseDto,
+      await this.repository.create(userDto),
+      { excludeExtraneousValues: true },
+    );
   }
 
   async updateUser(
