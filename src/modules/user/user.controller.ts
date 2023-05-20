@@ -20,14 +20,12 @@ import { AuthRequest } from '../../types/http';
 import { FollowUserRequestDto, UpdateUserRequestDto } from './dtos/requests';
 import { UserResponseDto } from './dtos/response';
 import { UserService } from './user.service';
-import { Serialize } from '../../filters/serializer.interceptor';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('users')
 @ApiBearerAuth()
 @Controller('users')
 @UseGuards(JwtAuthGuard)
-@Serialize()
 export class UserController {
   constructor(private userService: UserService) {}
 

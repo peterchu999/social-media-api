@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepositoryService } from '../../repositories/user/user.repository.service';
-import { CreateUserRequestDto, UpdateUserRequestDto } from './dtos/requests';
-import { User } from 'src/schemas/User.schema';
-import { UserResponseDto } from './dtos/response';
-import { AwsService } from '../aws/aws.service';
 import { v4 as uuid } from 'uuid';
-import { CreateUserDto, UpdateUserDto } from './dtos/repository';
+import { UserRepositoryService } from '../../repositories/user/user.repository.service';
+import { AwsService } from '../aws/aws.service';
+import { UpdateUserDto } from './dtos/repository';
+import { CreateUserRequestDto, UpdateUserRequestDto } from './dtos/requests';
+import { UserResponseDto } from './dtos/response';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class UserService {
@@ -31,7 +31,11 @@ export class UserService {
       );
       userDto.profilePictureUrl = Location;
     }
-    return this.repository.update(userId, updateUserData);
+    return plainToInstance(
+      UserResponseDto,
+      await this.repository.update(userId, updateUserData),
+      { excludeExtraneousValues: true },
+    );
   }
 
   async findByUsername(username: string) {
@@ -39,11 +43,19 @@ export class UserService {
   }
 
   async findById(userId: string): Promise<UserResponseDto> {
-    return this.repository.findById(userId);
+    return plainToInstance(
+      UserResponseDto,
+      await this.repository.findById(userId),
+      { excludeExtraneousValues: true },
+    );
   }
 
   async followUser(userId, followingId): Promise<UserResponseDto> {
     await this.repository.addToFollower(followingId, userId);
-    return this.repository.addToFollowing(userId, followingId);
+    return plainToInstance(
+      UserResponseDto,
+      await this.repository.addToFollowing(userId, followingId),
+      { excludeExtraneousValues: true },
+    );
   }
 }

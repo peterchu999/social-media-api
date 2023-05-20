@@ -10,7 +10,14 @@ import {
   LikesPostDto,
   UpdatePostRequestDto,
 } from './dtos/requests';
-import { CreatePostResponseDto, GetPostsResponseDto } from './dtos/responses';
+import {
+  CreatePostResponseDto,
+  GetPostsResponseDto,
+  LikePostResponseDto,
+} from './dtos/responses';
+import { plainToInstance } from 'class-transformer';
+import { CommentPostResponseDto } from './dtos/responses';
+import { UpdatePostResponseDto } from './dtos/responses';
 
 @Injectable()
 export class PostService {
@@ -30,46 +37,73 @@ export class PostService {
       `posts/${uuid()}`,
     );
 
-    return this.postRepository.create({
-      ...createPostData,
-      imageUrl: Location,
-    });
+    return plainToInstance(
+      CreatePostResponseDto,
+      await this.postRepository.create({
+        ...createPostData,
+        imageUrl: Location,
+      }),
+      { excludeExtraneousValues: true },
+    );
   }
 
   async deletePost(deletePostDto: DeletePostDto): Promise<boolean> {
     return this.postRepository.delete(deletePostDto);
   }
 
-  async likePost({ postId, userId }: LikesPostDto) {
-    return this.postRepository.insertUniqueUserLikes(postId, userId);
+  async likePost({
+    postId,
+    userId,
+  }: LikesPostDto): Promise<LikePostResponseDto> {
+    return plainToInstance(
+      LikePostResponseDto,
+      await this.postRepository.insertUniqueUserLikes(postId, userId),
+      { excludeExtraneousValues: true },
+    );
   }
 
   async addCommentToPost(postId, commentDto: CommentDto) {
     const comment = await this.postRepository.createComment(commentDto);
-    return this.postRepository.insertComment(postId, comment);
+    return plainToInstance(
+      CommentPostResponseDto,
+      await this.postRepository.insertComment(postId, comment),
+      { excludeExtraneousValues: true },
+    );
   }
 
   async getUserPost(userId: string): Promise<GetPostsResponseDto> {
     const posts = await this.postRepository.getPostByAuthors([userId]);
-    return { posts };
+    return plainToInstance(
+      GetPostsResponseDto,
+      { posts },
+      { excludeExtraneousValues: true },
+    );
   }
 
   async getUserFeed(userId: string): Promise<GetPostsResponseDto> {
     const { following } = await this.userService.findById(userId);
     const posts = await this.postRepository.getPostByAuthors(following);
-    return { posts };
+    return plainToInstance(
+      GetPostsResponseDto,
+      { posts },
+      { excludeExtraneousValues: true },
+    );
   }
 
   async getPostBy(keyword: string): Promise<GetPostsResponseDto> {
     const posts = await this.postRepository.getPostByKeyword(keyword);
-    return { posts };
+    return plainToInstance(
+      GetPostsResponseDto,
+      { posts },
+      { excludeExtraneousValues: true },
+    );
   }
 
   async updatePost(
     postId: string,
     userId: string,
     { image, ...postData }: UpdatePostRequestDto,
-  ) {
+  ): Promise<UpdatePostResponseDto> {
     const postDto: UpdatePostDto = { ...postData, id: postId };
 
     if (image) {
@@ -80,6 +114,10 @@ export class PostService {
       postDto.imageUrl = Location;
     }
 
-    return this.postRepository.update(userId, postDto);
+    return plainToInstance(
+      UpdatePostResponseDto,
+      await this.postRepository.update(userId, postDto),
+      { excludeExtraneousValues: true },
+    );
   }
 }

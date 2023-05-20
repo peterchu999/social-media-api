@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 import { LoginRequestDto } from './dtos/requests';
 import { LoginResponseDto, SignUpResponseDto } from './dtos/responses';
 import { User } from 'src/schemas/User.schema';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class AuthService {
@@ -23,7 +24,9 @@ export class AuthService {
       password: encryptedPassword,
     });
 
-    return users;
+    return plainToInstance(SignUpResponseDto, users, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async validateUser(

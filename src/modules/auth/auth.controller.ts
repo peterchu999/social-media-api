@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { Serialize } from '../../filters/serializer.interceptor';
 import { AuthService } from './auth.service';
 import { LoginRequestDto, SignUpRequestDto } from './dtos/requests';
 import { LoginResponseDto, SignUpResponseDto } from './dtos/responses';
@@ -8,7 +7,6 @@ import { LoginResponseDto, SignUpResponseDto } from './dtos/responses';
 @ApiTags('auth')
 @ApiBearerAuth()
 @Controller('auth')
-@Serialize()
 export class AuthController {
   constructor(protected authService: AuthService) {}
 
