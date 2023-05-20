@@ -1,0 +1,331 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/users": {
+      "patch": {
+        "operationId": "UserController_updateProfile",
+        "summary": "update user information",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateUserRequestDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Successfully Update User Information" }
+        },
+        "tags": ["users"],
+        "security": [{ "bearer": [] }]
+      },
+      "get": {
+        "operationId": "UserController_getUserInformation",
+        "summary": "get user information",
+        "parameters": [],
+        "responses": {
+          "200": { "description": "Successfully Retrive User Information" }
+        },
+        "tags": ["users"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/users/follow": {
+      "post": {
+        "operationId": "UserController_followUser",
+        "summary": "follow another user",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FollowUserRequestDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "You've follow another user" } },
+        "tags": ["users"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/posts": {
+      "post": {
+        "operationId": "PostController_createPost",
+        "summary": "create new post",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreatePostRequestDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Successfully Create New Posts" }
+        },
+        "tags": ["posts"],
+        "security": [{ "bearer": [] }]
+      },
+      "get": {
+        "operationId": "PostController_getUserPosts",
+        "summary": "Get Current User Posts",
+        "parameters": [],
+        "responses": {
+          "200": { "description": "Successfully retrive user post" }
+        },
+        "tags": ["posts"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/posts/{postId}": {
+      "patch": {
+        "operationId": "PostController_updatePost",
+        "summary": "Update Post Information",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdatePostRequestDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Successfully update post information" }
+        },
+        "tags": ["posts"],
+        "security": [{ "bearer": [] }]
+      },
+      "delete": {
+        "operationId": "PostController_deletePost",
+        "summary": "Delete a post",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "Post Deleted" } },
+        "tags": ["posts"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/posts/{postId}/likes": {
+      "post": {
+        "operationId": "PostController_likePost",
+        "summary": "Like a Post",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "Successfully like the post" } },
+        "tags": ["posts"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/posts/{postId}/comments": {
+      "post": {
+        "operationId": "PostController_commentPost",
+        "summary": "insert comments on the posts",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CommentPostRequestDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Successfully comment on the post" }
+        },
+        "tags": ["posts"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/posts/search": {
+      "get": {
+        "operationId": "PostController_getPostsBy",
+        "summary": "Search a post",
+        "parameters": [
+          {
+            "name": "keyword",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Successfully retrive post by keyword" }
+        },
+        "tags": ["posts"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/posts/feeds": {
+      "get": {
+        "operationId": "PostController_getFeeds",
+        "summary": "Feeds of current user",
+        "parameters": [],
+        "responses": { "200": { "description": "Successfully retrive feeds" } },
+        "tags": ["posts"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/auth": {
+      "get": {
+        "operationId": "AuthController_check",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["auth"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/auth/sign-up": {
+      "post": {
+        "operationId": "AuthController_signup",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SignUpRequestDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SignUpResponseDto" }
+              }
+            }
+          }
+        },
+        "tags": ["auth"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginRequestDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/LoginResponseDto" }
+              }
+            }
+          }
+        },
+        "tags": ["auth"],
+        "security": [{ "bearer": [] }]
+      }
+    }
+  },
+  "info": {
+    "title": "Social Media API",
+    "description": "Social media platform using NestJS, MongoDB, and AWS. The platform allows users to create posts, follow other users, like and comment on posts, and search for posts using keywords",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "UpdateUserRequestDto": {
+        "type": "object",
+        "properties": {
+          "biography": { "type": "string" },
+          "profilePicture": { "type": "object", "description": "image file" }
+        }
+      },
+      "FollowUserRequestDto": {
+        "type": "object",
+        "properties": { "userId": { "type": "string" } },
+        "required": ["userId"]
+      },
+      "CreatePostRequestDto": {
+        "type": "object",
+        "properties": {
+          "image": { "type": "object", "description": "image file" },
+          "description": { "type": "string" },
+          "keywords": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["image", "description", "keywords"]
+      },
+      "UpdatePostRequestDto": {
+        "type": "object",
+        "properties": {
+          "image": { "type": "object", "description": "image file" },
+          "description": { "type": "string" },
+          "keywords": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "CommentPostRequestDto": {
+        "type": "object",
+        "properties": { "text": { "type": "string" } },
+        "required": ["text"]
+      },
+      "SignUpRequestDto": {
+        "type": "object",
+        "properties": {
+          "username": { "type": "string" },
+          "password": { "type": "string" }
+        },
+        "required": ["username", "password"]
+      },
+      "SignUpResponseDto": {
+        "type": "object",
+        "properties": { "username": { "type": "string" } },
+        "required": ["username"]
+      },
+      "LoginRequestDto": {
+        "type": "object",
+        "properties": {
+          "username": { "type": "string" },
+          "password": { "type": "string" }
+        },
+        "required": ["username", "password"]
+      },
+      "LoginResponseDto": {
+        "type": "object",
+        "properties": { "access_token": { "type": "string" } },
+        "required": ["access_token"]
+      }
+    }
+  }
+}
